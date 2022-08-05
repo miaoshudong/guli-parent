@@ -25,7 +25,7 @@ public class CodeGenerator {
         gc.setOutputDir("D:\\0java\\guli-parent\\service\\service_edu" + "/src/main/java");
         gc.setAuthor("atguigu");
         gc.setOpen(false); //生成后是否打开资源管理器
-        gc.setFileOverride(true); //重新生成时文件是否覆盖
+        gc.setFileOverride(false); //重新生成时文件是否覆盖
         /*
          * mp生成service层代码，默认接口名称第一个字母有 I
          * UcenterService
@@ -59,7 +59,7 @@ public class CodeGenerator {
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
 //        strategy.setInclude("edu_chapter", "edu_course", "edu_course_description", "edu_video");
-        strategy.setInclude("edu_teacher");
+        strategy.setInclude("edu_subject");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 

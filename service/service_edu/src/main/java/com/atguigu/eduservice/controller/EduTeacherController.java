@@ -4,6 +4,7 @@ import com.atguigu.commonutils.R;
 import com.atguigu.eduservice.entity.EduTeacher;
 import com.atguigu.eduservice.entity.vo.TeacherQuery;
 import com.atguigu.eduservice.service.EduTeacherService;
+import com.atguigu.servicebase.exceptionhandler.GuliException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/eduservice/teacher")
+@CrossOrigin
 public class EduTeacherController {
     @Autowired
     private EduTeacherService teacherService;
@@ -44,6 +46,7 @@ public class EduTeacherController {
     }
 
     // 分页查询
+    @ApiOperation(value = "分页查询")
     @GetMapping("pageTeacher/{current}/{limit}")
     public R pageListTeacher(@PathVariable long current,
                              @PathVariable long limit) {
@@ -51,6 +54,12 @@ public class EduTeacherController {
         teacherService.page(pageTeacher, null);
         //总记录数
         long total = pageTeacher.getTotal();
+//        try {
+//        int a = 10/0;
+//        }catch (Exception e){
+//            throw new GuliException(20001,"自定义异常1");
+//        }
+
         //记录
         List<EduTeacher> records = pageTeacher.getRecords();
         Map map = new HashMap<>();
@@ -60,6 +69,7 @@ public class EduTeacherController {
     }
 
     //条件查询 带分页
+    @ApiOperation(value = "条件查询分页")
     @PostMapping("pageTeacherCondition/{current}/{limit}")
     public R pageTeacherCondition(@PathVariable long current,
                                   @PathVariable long limit,
@@ -82,7 +92,7 @@ public class EduTeacherController {
         if (!StringUtils.isEmpty(end)) {
             wrapper.le("gmt_create", end);
         }
-
+        wrapper.orderByDesc("gmt_create");
         teacherService.page(pageTeacher, wrapper);
         long total = pageTeacher.getTotal();
         List<EduTeacher> records = pageTeacher.getRecords();
@@ -91,5 +101,38 @@ public class EduTeacherController {
         map.put("rows", records);
         return R.ok().data(map);
     }
+
+    //添加讲师接口的方法
+    @ApiOperation(value = "添加讲师")
+    @PostMapping("addTeacher")
+    public R addTeacher(@RequestBody EduTeacher eduTeacher) {
+        boolean save = teacherService.save(eduTeacher);
+        if (save) {
+            return R.ok();
+        } else {
+            return R.error();
+        }
+    }
+    @ApiOperation(value = "根据ID查询讲师")
+    @GetMapping("getTeacher/{id}")
+    public R getById(
+            @ApiParam(name = "id", value = "讲师ID", required = true)
+            @PathVariable String id){
+        EduTeacher teacher = teacherService.getById(id);
+        return R.ok().data("item", teacher);
+    }
+    @ApiOperation(value = "根据ID修改讲师")
+    @PostMapping("updateTeacher")
+    public R updateById(
+            @ApiParam(name = "teacher", value = "讲师对象", required = true)
+            @RequestBody EduTeacher teacher){
+        boolean flag = teacherService.updateById(teacher);
+        if (flag){
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
+
 }
 
