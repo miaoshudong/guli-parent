@@ -1,9 +1,15 @@
 package com.atguigu.eduservice.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.atguigu.commonutils.R;
+import com.atguigu.eduservice.entity.EduChapter;
+import com.atguigu.eduservice.entity.EduVideo;
+import com.atguigu.eduservice.service.EduVideoService;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * <p>
@@ -14,8 +20,40 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-08-06
  */
 @RestController
-@RequestMapping("/eduservice/edu-video")
+@RequestMapping("/eduservice/video")
+@CrossOrigin
 public class EduVideoController {
+    @Autowired
+    private EduVideoService eduVideoService;
+    //添加小节
+    @PostMapping("addVideo")
+    public R addVideo(@RequestBody EduVideo eduVideo){
+        eduVideoService.save(eduVideo);
+        return R.ok();
+    }
+    //删除小节 需要完善
+    @DeleteMapping("{videoId}")
+    public R deleteVideo(@PathVariable String videoId){
+        boolean flag = eduVideoService.removeById(videoId);
+        if (flag) {
+
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
+    //编辑小节
+    @PostMapping("updateVideo")
+    public R updateVideo(@RequestBody EduVideo eduVideo){
+        eduVideoService.updateById(eduVideo);
+        return R.ok();
+    }
+
+    @GetMapping("/getVideo/{id}")
+    public R getVideo(@PathVariable String id){
+        EduVideo eduVideo = eduVideoService.getById(id);
+        return R.ok().data("video",eduVideo);
+    }
 
 }
 
