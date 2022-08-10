@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author miaoshudong
  * @since 2022/8/8 13:02
@@ -22,28 +24,36 @@ import org.springframework.web.multipart.MultipartFile;
 public class VodController {
     @Autowired
     private VodService vodService;
-//   上传视频到阿里云
+
+    //   上传视频到阿里云
     @PostMapping("uploadAlyVideo")
-    public R uploadAlyVideo(MultipartFile file){
+    public R uploadAlyVideo(MultipartFile file) {
         String videoId = vodService.uploadVideoAly(file);
 
-        return R.ok().data("videoId",videoId);
+        return R.ok().data("videoId", videoId);
     }
-//    根据视频id 删除视频
+
+    //    根据视频id 删除视频
     @DeleteMapping("removeAlyVideo/{id}")
-    public  R removeAlyVideo(@PathVariable String id){
+    public R removeAlyVideo(@PathVariable String id) {
         try {
-            DefaultAcsClient client = InitVodClient.initVodClient(ConstVodUtils.ACCESS_KEY_ID,ConstVodUtils.ACCESS_KEY_SECRET);
+            DefaultAcsClient client = InitVodClient.initVodClient(ConstVodUtils.ACCESS_KEY_ID, ConstVodUtils.ACCESS_KEY_SECRET);
             DeleteVideoRequest request = new DeleteVideoRequest();
             DeleteVideoResponse response = new DeleteVideoResponse();
             request.setVideoIds(id);
-            response=client.getAcsResponse(request);
+            response = client.getAcsResponse(request);
             return R.ok();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new GuliException(20001,"删除视频失败");
+            throw new GuliException(20001, "删除视频失败");
         }
+    }
 
+    // 删除多个阿里云视频的方法
+    @DeleteMapping("delete-batch")
+    public R deleteBatch(@RequestParam("videoIdList") List<String> videoIdList) {
+        vodService.removeMoreAlyVideo(videoIdList);
+        return R.ok();
     }
 }

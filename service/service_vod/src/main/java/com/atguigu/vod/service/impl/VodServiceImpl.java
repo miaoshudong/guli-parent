@@ -3,12 +3,21 @@ package com.atguigu.vod.service.impl;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+import com.atguigu.commonutils.R;
+import com.atguigu.servicebase.exceptionhandler.GuliException;
 import com.atguigu.vod.service.VodService;
 import com.atguigu.vod.utils.ConstVodUtils;
+import com.atguigu.vod.utils.InitVodClient;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author miaoshudong
@@ -38,5 +47,31 @@ public class VodServiceImpl implements VodService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void removeMoreAlyVideo(List<String> videoIdList) {
+        try {
+            DefaultAcsClient client = InitVodClient.initVodClient(ConstVodUtils.ACCESS_KEY_ID, ConstVodUtils.ACCESS_KEY_SECRET);
+            DeleteVideoRequest request = new DeleteVideoRequest();
+            DeleteVideoResponse response = new DeleteVideoResponse();
+            String videoIds = StringUtils.join(videoIdList.toArray(), ",");
+            request.setVideoIds(videoIds);
+            response = client.getAcsResponse(request);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GuliException(20001, "删除视频失败");
+        }
+    }
+
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("11");
+        list.add("22");
+        list.add("33");
+        System.out.println(list);
+        String join = StringUtils.join(list.toArray(), ",");
+        System.out.println(join);
     }
 }

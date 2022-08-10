@@ -121,10 +121,14 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Override
     public boolean removeCourseById(String id) {
+
+
         //根据id删除所有视频
         eduVideoService.removeByCourseId(id);
         //根据id删除所有章节
         eduChapterService.removeByCourseId(id);
+        //
+        eduCourseDescriptionService.removeById(id);
         Integer result = baseMapper.deleteById(id);
         return null != result && result > 0;
     }

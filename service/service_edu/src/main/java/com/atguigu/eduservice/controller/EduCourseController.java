@@ -54,6 +54,7 @@ public class EduCourseController {
         CoursePublishVo courseInfoForm = eduCourseService.getCoursePublishVoById(id);
         return R.ok().data("item", courseInfoForm);
     }
+    // 发布课程
     @PostMapping("publishCourse/{id}")
     public R publishCourse(@PathVariable String id){
         EduCourse eduCourse = new EduCourse();
@@ -75,7 +76,7 @@ public class EduCourseController {
         return  R.ok().data("total", total).data("rows", records);
 
     }
-
+// 删除课程
     @DeleteMapping("{id}")
     public R removeById(
             @PathVariable String id){
