@@ -5,6 +5,8 @@ import com.atguigu.eduservice.entity.EduCourseDescription;
 import com.atguigu.eduservice.entity.vo.CourseInfoVo;
 import com.atguigu.eduservice.entity.vo.CoursePublishVo;
 import com.atguigu.eduservice.entity.vo.CourseQuery;
+import com.atguigu.eduservice.entity.vo.frontvo.CourseFrontVo;
+import com.atguigu.eduservice.entity.vo.frontvo.CourseWebVo;
 import com.atguigu.eduservice.mapper.EduCourseMapper;
 import com.atguigu.eduservice.service.EduChapterService;
 import com.atguigu.eduservice.service.EduCourseDescriptionService;
@@ -18,6 +20,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -131,5 +137,48 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         eduCourseDescriptionService.removeById(id);
         Integer result = baseMapper.deleteById(id);
         return null != result && result > 0;
+    }
+
+    @Override
+    public Map<String, Object> getCourseFrontList(Page<EduCourse> eduCoursePage, CourseFrontVo courseFrontVo) {
+        QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
+        // 判断条件值是否为空 不为空拼接
+        if (!StringUtils.isEmpty(courseFrontVo.getSubjectParentId())){ //一级分类
+            queryWrapper.eq("subject_parent_id",courseFrontVo.getSubjectParentId());
+        }
+        if (!StringUtils.isEmpty(courseFrontVo.getSubjectId())){ //一级分类
+            queryWrapper.eq("subject_id",courseFrontVo.getSubjectId());
+        }
+        if (!StringUtils.isEmpty(courseFrontVo.getBuyCountSort())) {
+            queryWrapper.orderByDesc("buy_count");
+        }
+        if (!StringUtils.isEmpty(courseFrontVo.getGmtCreateSort())) {
+            queryWrapper.orderByDesc("gmt_create");
+        }
+        if (!StringUtils.isEmpty(courseFrontVo.getPriceSort())) {
+            queryWrapper.orderByDesc("price");
+        }
+        baseMapper.selectPage(eduCoursePage,queryWrapper);
+        List<EduCourse> records = eduCoursePage.getRecords();
+        long current = eduCoursePage.getCurrent();
+        long pages = eduCoursePage.getPages();
+        long size = eduCoursePage.getSize();
+        long total = eduCoursePage.getTotal();
+        boolean hasNext = eduCoursePage.hasNext();
+        boolean hasPrevious = eduCoursePage.hasPrevious();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("items", records);
+        map.put("current", current);
+        map.put("pages", pages);
+        map.put("size", size);
+        map.put("total", total);
+        map.put("hasNext", hasNext);
+        map.put("hasPrevious", hasPrevious);
+        return map;
+    }
+
+    @Override
+    public CourseWebVo getBaseCourseInfo(String courseId) {
+        return baseMapper.getBaseCourseInfo(courseId);
     }
 }

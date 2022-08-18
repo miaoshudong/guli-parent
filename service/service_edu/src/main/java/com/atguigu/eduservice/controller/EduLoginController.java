@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2022/8/4 8:21
  */
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/eduservice/user")
 public class EduLoginController {
     @PostMapping("login")

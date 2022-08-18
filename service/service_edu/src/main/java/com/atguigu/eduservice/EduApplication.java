@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"com.atguigu"})
 @EnableDiscoveryClient
 @EnableFeignClients
-
 public class EduApplication {
     public static void main(String[] args) {
         SpringApplication.run(EduApplication.class,args);

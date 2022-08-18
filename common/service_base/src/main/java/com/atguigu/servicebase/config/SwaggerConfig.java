@@ -1,4 +1,4 @@
-package com.atguigu.servicebase;
+package com.atguigu.servicebase.config;
 
 import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 .apiInfo(webApiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.atguigu"))
-                .paths(Predicates.not(PathSelectors.regex("/admin/.*")))
+//                .paths(Predicates.not(PathSelectors.regex("/admin/.*")))
                 .paths(Predicates.not(PathSelectors.regex("/error.*")))
                 .build();
     }

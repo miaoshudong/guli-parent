@@ -16,6 +16,11 @@
         <module>service_oss</module>
         <module>service_vod</module>
         <module>service_cms</module>
+        <module>service_sms</module>
+        <module>service_ucenter</module>
+        <module>service_order</module>
+        <module>service_statistic</module>
+        <module>service_acl</module>
     </modules>
     <dependencies>
         <dependency>

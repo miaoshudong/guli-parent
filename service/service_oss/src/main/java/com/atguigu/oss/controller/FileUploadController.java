@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/eduoss/fileoss")
-@CrossOrigin //跨域
+//@CrossOrigin //跨域
 public class FileUploadController {
     @GetMapping("hello")
     public R hello(){

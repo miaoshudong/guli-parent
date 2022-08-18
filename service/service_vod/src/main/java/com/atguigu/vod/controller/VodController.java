@@ -1,8 +1,11 @@
 package com.atguigu.vod.controller;
 
 import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
 import com.atguigu.commonutils.R;
 import com.atguigu.servicebase.exceptionhandler.GuliException;
 import com.atguigu.vod.service.VodService;
@@ -20,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/eduvod/video")
-@CrossOrigin
+//@CrossOrigin
 public class VodController {
     @Autowired
     private VodService vodService;
@@ -55,5 +58,25 @@ public class VodController {
     public R deleteBatch(@RequestParam("videoIdList") List<String> videoIdList) {
         vodService.removeMoreAlyVideo(videoIdList);
         return R.ok();
+    }
+    //根据视频id获取视频播放凭证
+
+    @GetMapping("getPlayAuth/{id}")
+    public R getPlayAuth(@PathVariable String id)  {
+        try{
+            DefaultAcsClient client = InitVodClient.initVodClient(ConstVodUtils.ACCESS_KEY_ID, ConstVodUtils.ACCESS_KEY_SECRET);
+            GetVideoPlayAuthRequest request = new GetVideoPlayAuthRequest();
+            GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
+            request.setVideoId(id);
+            response = client.getAcsResponse(request);
+            String playAuth = response.getPlayAuth();
+            //VideoMeta信息
+            return R.ok().data("playAuth",playAuth);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw  new GuliException(20001,"获取视频凭证错误");
+        }
+
+
     }
 }
